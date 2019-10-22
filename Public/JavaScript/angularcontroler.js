@@ -10,13 +10,24 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl: "/public/HTML/auth/signup.html",
       controller: "signupController"
     })
-    // .when("/chat", {
-    //   templateUrl: "./views/chat.html",
-    //   controller: "chatController"
-    // })
-    .otherwise({
-      redirectTo: "/"
+    .when("/user", {
+      templateUrl: "/public/HTML/user/home.html"
+      // controller: "home"
+    })
+    .when("/create", {
+      templateUrl: "/public/HTML/user/createChannel.html",
+      controller: "createChannel"
+    })
+    .when("/find", {
+      templateUrl: "/public/HTML/user/search.html"
+    })
+    .when("/dashbord", {
+      templateUrl: "/public/HTML/user/dashbord.html"
     });
+
+  // .otherwise({
+  // redirectTo: "/"
+  //  });
   $locationProvider.html5Mode({
     enabled: true,
     requireBase: false
@@ -38,8 +49,9 @@ app.controller("loginController", [
         url: "/login"
       }).then(
         function successCallback(res) {
-          if (res.data.success) $location.path("/user");
-          else {
+          if (res.data == "success") {
+            $location.path("/user");
+          } else {
             alert("username or password is not correct");
             $location.path("/");
           }
@@ -77,10 +89,9 @@ app.controller("signupController", [
         url: "/signup"
       }).then(
         function successCallback(res) {
-          if (res.data.success) $location.path("/user");
+          if (res.data == "done") $location.path("/");
           else {
-            alert("username or password is not correct");
-            $location.path("/signup");
+            alert("confirm password is not matched");
           }
         },
         function errorCallback(response) {
@@ -89,5 +100,41 @@ app.controller("signupController", [
       );
     }
     $scope.signup = signup;
+  }
+]);
+
+app.controller("createChannel", [
+  "$scope",
+  "$http",
+  "$location",
+  function($scope, $http, $location) {
+    $scope.name = "";
+    $scope.disc = "";
+    $scope.tag = "";
+    function create() {
+      console.log($scope.username);
+      $http({
+        method: "POST",
+        data: {
+          name: $scope.name,
+          disc: $scope.disc,
+          tag: $scope.tag
+        },
+        url: "/createChannel"
+      }).then(
+        function successCallback(res) {
+          if (res.data == "created") {
+            alert("Channel created");
+            $location.path("/create");
+          } else {
+            alert("error in creating channel");
+          }
+        },
+        function errorCallback(response) {
+          console.log("err");
+        }
+      );
+    }
+    $scope.create = create;
   }
 ]);

@@ -13,6 +13,13 @@ mongoose.connect("mongodb://localhost:27017/team", {
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true
+  })
+);
 app.use("/public", express.static(__dirname + "/public"));
 app.use(routes);
 
