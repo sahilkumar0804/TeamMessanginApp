@@ -48,31 +48,14 @@
             <div class="row">
                       <form ng-submit="create()" method="post">
                       <div class="col-sm-12">
-                              <h2>Create community</h2>
+                              <h2>Create channel</h2>
                               <div class="form-group">
                                   <input type="text" class="form-control" name="name" placeholder="name"ng-model="name" required/>
                               </div><br>
                               <div class="form-group">
-                              <input type="hidden" name="desc" vlaue="" id="desc" ng-model="disc">
+                                    <textarea rows="4" cols="50" placeholder="Enter discription" ng-model="disc"></textarea>
                                         
-                                      <!-- Create the editor container -->
-                                      <div id="editor" style="height: 200px">
-                                         
-                                      </div>
-          
-                                      <!-- Include the Quill library -->
-                                      <script>
-                                          var quill = new Quill('#editor', {
-                                              theme: 'snow',
-                                              placeholder:"add Discription hear",
-                                          });
-                                          let desc=document.getElementById("desc");
-                                          quill.on("text-change" ,()=>
-                                          {
-                                              var text=quill.getText();
-                                              desc.value=text;
-                                          })
-                                      </script>
+                                
                                   </div>
                                   
                               <div class="form-group">

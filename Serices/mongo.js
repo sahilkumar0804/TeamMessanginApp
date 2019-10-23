@@ -21,3 +21,20 @@ module.exports.findPopulate = (model, query = {}, callback) => {
     })
     .exec(callback);
 };
+
+module.exports.findMany = (model, query = {}, callback) => {
+  model.find(query, callback);
+};
+
+module.exports.getChat = (
+  model,
+  query = {},
+  options = {},
+  sort = {},
+  callback
+) => {
+  model
+    .find(query, {}, options)
+    .sort(sort)
+    .exec(callback);
+};
