@@ -14,12 +14,7 @@ module.exports.findOne = (
 };
 
 module.exports.findPopulate = (model, query = {}, callback) => {
-  model
-    .find(query)
-    .populate({
-      path: "members"
-    })
-    .exec(callback);
+  model.find(query, callback);
 };
 
 module.exports.findMany = (model, query = {}, callback) => {

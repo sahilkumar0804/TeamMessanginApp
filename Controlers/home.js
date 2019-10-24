@@ -140,3 +140,93 @@ module.exports.addChat = (req, res) => {
     }
   );
 };
+
+module.exports.join = (req, res) => {
+  services.findOne(channel, { _id: req.body.cid }, {}, {}, (err, data) => {
+    if (err) throw err;
+    else {
+      data.members.push(req.session.uid);
+      data.save();
+      res.send(true);
+    }
+  });
+};
+
+module.exports.findUser = (req, res) => {
+  var exp = { $and: [] };
+  if (req.body.search != "") {
+    var regex = new RegExp(req.body.search, "i");
+    exp.$and.push({ username: regex });
+  }
+  services.findPopulate(
+    channel,
+    {
+      _id: { $eq: req.body.channelId }
+    },
+    (err, data) => {
+      if (err) console.log(err);
+      if (data) {
+        exp.$and.push({ _id: { $nin: data[0].members } });
+        exp.$and.push({ _id: { $not: { $eq: data[0].owner } } });
+        exp.$and.push({ invite: { $nin: req.body.channelId } });
+        services.findPopulate(user, exp, (err, data) => {
+          res.send(data);
+        });
+      }
+    }
+  );
+};
+
+module.exports.invite = (req, res) => {
+  services.findOne(
+    user,
+    {
+      _id: { $eq: req.body.userid }
+    },
+    (err, data) => {
+      data.invite.push(req.body.channelId);
+      data.save();
+      res.send(true);
+    }
+  );
+};
+
+module.exports.getRequest = (req, res) => {
+  services.findOne(user, { _id: { $eq: req.session.uid } }, (err, data) => {
+    if (data) {
+      services.findPopulate(
+        channel,
+        { _id: { $in: data.invite } },
+        (err, data) => {
+          res.send(data);
+        }
+      );
+    }
+  });
+};
+
+module.exports.inviteRes = (req, res) => {
+  services.findOne(
+    user,
+    { _id: { $eq: req.session.uid } },
+    {},
+    {},
+    (err, data) => {
+      data.invite.pull(req.body.channelId);
+      data.save();
+    }
+  );
+  if (req.body.res) {
+    services.findOne(
+      channel,
+      { _id: { $eq: req.body.channelId } },
+      {},
+      {},
+      (err, data) => {
+        data.members.push(req.session.uid);
+        data.save();
+      }
+    );
+  }
+  res.send("ok");
+};

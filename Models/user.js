@@ -21,7 +21,8 @@ const userSchema = new Schema(
       lowercase: true,
       unique: true,
       required: true
-    }
+    },
+    invite: []
     //   created_at: Date,
     //   updated_at: { type: Date, default: Date.now }
   },

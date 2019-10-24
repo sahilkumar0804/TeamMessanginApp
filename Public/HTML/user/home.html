@@ -1,8 +1,33 @@
-<style>
-    .navbar li:last-child {
-                  float: right; /* last li item */
-              }
-    </style>
+
+<button 
+style="border-radius:25px; color:red;position:fixed; right:2px; z-index: 2; top:60px;"
+data-toggle="modal" data-target="#noti"
+onclick="getRequest()"
+>
+<i class="fas fa-bell"></i>
+</button>
+<!-- Modal -->
+<div class="modal fade" id="noti" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Channel requests</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="noti_body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- nabbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/user">Home</a>
     <button
@@ -20,11 +45,17 @@
       <ul class="navbar-nav" >
             &nbsp;&nbsp;
         <li class="nav-item active">
-          <a class="nav-link" href="/find"><i class="fas fa-search-plus"></i></a>
+          <a class="nav-link" href="/find">
+            <button class="btn"><i class="fas fa-search-plus"></i></button></a>
         </li>
         &nbsp;&nbsp;
         <li class="nav-item active">
-                <a class="nav-link" href="/dashbord">Dashbord</a>
+                <a class="nav-link" href="/dashbord">
+                  <button
+            class="btn"
+          >
+          Dashboard
+          </button></a>
               </li>
         &nbsp;&nbsp;
         <li class="nav-item">
@@ -33,6 +64,16 @@
             class="btn btn-primary"
           >
             Create Channel
+          </button>
+          </a>
+        </li>
+        &nbsp;&nbsp;
+        <li class="nav-item">
+        <a class="nav-link" href="/">
+          <button
+            class="btn btn-primary"
+          >
+            Logout
           </button>
           </a>
         </li>
@@ -94,7 +135,7 @@ padding:20px;">
  <div class="row">
  <div class="col-4">
  <h4>Channels</h4>
- <div style="background-color:#dee2e685;height:510px;overflow:scroll;">
+ <div style="background-color:#dee2e685;height:510px;overflow:auto;">
     <table id="box">
 
       </table> 
@@ -102,7 +143,7 @@ padding:20px;">
 </div>
  <div class="col-8">
     <h4>Chats</h4>
-<div id="chat" style="padding:20px;background-color:#f8f9fa;height: 510px; overflow:scroll;">
+<div id="chat" style="padding:20px;background-color:#f8f9fa;height: 510px; overflow:auto;">
   
   <div>
       
@@ -115,123 +156,231 @@ padding:20px;">
  </div>
  </div>
 </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" id="searchinput" >
+          Search user
+        </h5>
+        <input type="text" placeholder="search" id="userinput"style="padding-left:4px;" oninput="searchuser(this)">
+      </div>
+      <div class="modal-body" id="modalbody">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 <script>
-   $(document).ready(()=>
-        {
-                  $.ajax({
-                        type:"POST",
-                        url: "/myChannels",
-                        success: function(data)
+    $(document).ready(()=>
+         {
+                   $.ajax({
+                         type:"POST",
+                         url: "/myChannels",
+                         success: function(data)
+                          {
+                             if(data!= "empty")
+                                for(i=0;i<data.length;i++)
+                                    $("#box").append(`<tr><td class='col-9' 
+                                     style='cursor:pointer' 
+                                     onclick='cilcked(this)' 
+                                     id='`+data[i]._id+`'><h4>`+data[i].name+`</h4>
+                                     </td><td class='col-2' style='padding:0.5rem'>
+                                       <button class='btn btn-outline-success' 
+                                       style='border-radius:25px'data-toggle='modal' 
+                                        data-target="#exampleModal" 
+                                        onclick="searchuser(this)"
+                                        id='`+data[i]._id+`'>+</button></td></tr>`);
+                         else
                          {
-                            if(data!= "empty")
+                                 $("#box").append("<div class='col-sm-12' style='margin-top:5px;font-weight:bold'><center>No Channels found</center><br><center><a class='btn btn-default' href='/find'>Click here to join channels</a></center></div>");
+                         }
+                          }
+                      });
+         });
+         var page=1 ,channelId;
+         var objDiv = document.getElementById("chat");
+        async function  cilcked(e)
+         {
+           page=1;
+           $("#input").css("display" , "inline");
+           $("#btninput").css("display" , "inline");
+           channelId=e.id;
+          $("#chat").html('');
+          
+           await getChat();
+           
+         }
+         function getChat()
+         {
+           $.ajax({
+                         type:"POST",
+                         data:{page :page,channelId :channelId},
+                         url: "/getChat",
+                         success: function(data)
+                          {
+                           if(data != 'empty')
+                             for(var i=0;i<data.length;i++)
+                                $("#chat").prepend(`<div class="card">
+                                               <div class="card-header">
+                                                 `+data[i].name+`<br>
+                                                 <small>posted on: `+data[i].createdAt+`
+                                               </div>
+                                               <div class="card-body">`+
+                                                 data[i].message+`
+                                               </div>
+                                             </div><br><br>`); 
+                                              
+                                              objDiv.scrollTop = objDiv.scrollHeight;            
+                          }
+                          
+                      });
+         }
+         function enter(e)
+         {
+           if(e.keyCode === 13 )
+           {
+               addChat();
+           }
+         }
+         function addChat()
+         {
+           if($('#input').val() != '')
+           {
+           $.ajax({
+                         type:"POST",
+                         url: "/addChat",
+                         data:{channelId,message : $('#input').val()},
+                         success: function(data)
+                          {
+                            if(data)
+                            {
+                           $("#chat").append(`<div class="card">
+                                               <div class="card-header">
+                                                 `+data.name+`<br>
+                                                 <small>posted on: `+data.createdAt+`
+                                               </div>
+                                               <div class="card-body">`+
+                                                 data.message+`
+                                               </div>
+                                             </div><br><br>`); 
+                                             objDiv.scrollTop = objDiv.scrollHeight;
+                           }
+                          }
+                      });
+                      $('#input').val('');
+           }
+         }
+        
+           $('#chat').scroll(function() {
+                var pos = $('#chat').scrollTop();
+              if (pos == 0) {
+                  page++;
+                   $.ajax({
+                         type:"POST",
+                         data:{page :page,channelId :channelId},
+                         url: "/getChat",
+                         success: function(data)
+                          {
+                             if(data != 'empty')
+                             for(var i=0;i<data.length;i++)
+                                $("#chat").prepend(`<div class="card">
+                                               <div class="card-header">
+                                                 `+data[i].name+`<br>
+                                                 <small>posted on: `+data[i].createdAt+`
+                                               </div>
+                                               <div class="card-body">`+
+                                                 data[i].message+`
+                                               </div>
+                                             </div><br><br>`); 
+                           }
+                          
+                      });
+                }
+         });
+         function searchuser(e)
+        {
+          if(channelId == undefined)
+               channelId = e.id;
+               $("#modalbody").html("");
+           $.ajax({
+                         type:"POST",
+                         url: "/findUser",
+                         data:{channelId:channelId,search :$("#userinput").val()},
+                         success: function(data)
+                          {
+                            if(data.length)
                                for(i=0;i<data.length;i++)
-                                   $("#box").append("<tr><td class='col-9' style='cursor:pointer' onclick='cilcked(this)' id='"+data[i]._id+"'><h4>"+data[i].name+"</h4></td><td class='col-2' style='padding:0.5rem'><button class='btn btn-outline-success' style='border-radius:25px'data-toggle='tooltip' data-placement='top' title='click to invite'>+</button></td></tr>");
+                                   $("#modalbody").append("<tr><td class='col-9' style='cursor:pointer' ><h4>"+data[i].username+"</h4></td><td class='col-2' style='padding:0.5rem'><button id='"+data[i]._id+"' channel='"+channelId+"' class='btn btn-outline-success' data-toggle='tooltip' data-placement='top' title='click to join' onclick='invite(this)'>invite</button></td></tr>");
                         else
                         {
-                                $("#box").append("<div class='col-sm-12' style='margin-top:5px;font-weight:bold'><center>No Channels found</center><br><center><a class='btn btn-default' href='/find'>Click here to join channels</a></center></div>");
+                                $("#modalbody").append("<div class='col-sm-12' style='margin-top:5px;font-weight:bold'><center>No User found</center></div>");
                         }
-                         }
-                     });
-        });
-        var page=1 ,channelId;
-        var objDiv = document.getElementById("chat");
-       async function  cilcked(e)
-        {
-          page=1;
-          $("#input").css("display" , "inline");
-          $("#btninput").css("display" , "inline");
-          channelId=e.id;
-         $("#chat").html('');
-         
-          await getChat();
-          
-        }
-        function getChat()
-        {
-          $.ajax({
-                        type:"POST",
-                        data:{page :page,channelId :channelId},
-                        url: "/getChat",
-                        success: function(data)
-                         {
-                          if(data != 'empty')
-                            for(var i=0;i<data.length;i++)
-                               $("#chat").prepend(`<div class="card">
-                                              <div class="card-header">
-                                                `+data[i].name+`<br>
-                                                <small>posted on: `+data[i].createdAt+`
-                                              </div>
-                                              <div class="card-body">`+
-                                                data[i].message+`
-                                              </div>
-                                            </div><br><br>`); 
-                                             
-                                             objDiv.scrollTop = objDiv.scrollHeight;            
-                         }
-                         
-                     });
-        }
-        function enter(e)
-        {
-          if(e.keyCode === 13 )
-          {
-              addChat();
+                          }
+                      });
           }
-        }
-        function addChat()
-        {
-          console.log("addChat");
-          if($('#input').val() != '')
+          function invite(e)
           {
-          $.ajax({
+              $.ajax({
                         type:"POST",
-                        url: "/addChat",
-                        data:{channelId,message : $('#input').val()},
+                        data :{userid:e.id,channelId:e.attributes.channel.nodeValue},
+                        url: "/invite",
                         success: function(data)
                          {
+                           console.log(data);
                            if(data)
-                           {
-                          $("#chat").append(`<div class="card">
-                                              <div class="card-header">
-                                                `+data.name+`<br>
-                                                <small>posted on: `+data.createdAt+`
-                                              </div>
-                                              <div class="card-body">`+
-                                                data.message+`
-                                              </div>
-                                            </div><br><br>`); 
-                                            objDiv.scrollTop = objDiv.scrollHeight;
-                          }
+                            e.parentElement.parentElement.remove();
                          }
                      });
-                     $('#input').val('');
           }
-        }
-       
-          $('#chat').scroll(function() {
-               var pos = $('#chat').scrollTop();
-             if (pos == 0) {
-                 page++;
-                  $.ajax({
+          function getRequest()
+          {
+            $("#noti_body").html("");
+            $.ajax({
                         type:"POST",
-                        data:{page :page,channelId :channelId},
-                        url: "/getChat",
+                         url: "/getrequest",
                         success: function(data)
                          {
-                            if(data != 'empty')
-                            for(var i=0;i<data.length;i++)
-                               $("#chat").prepend(`<div class="card">
-                                              <div class="card-header">
-                                                `+data[i].name+`<br>
-                                                <small>posted on: `+data[i].createdAt+`
-                                              </div>
-                                              <div class="card-body">`+
-                                                data[i].message+`
-                                              </div>
-                                            </div><br><br>`); 
-                          }
-                         
+                           if(data.length)
+                              {
+                                for(i=0;i<data.length;i++)
+                                $("#noti_body").append("<div>"+data[i].name+` <span style="float:right">
+                                    <button onclick='initeRes(true,this)' id=`+data[i]._id+`
+                                    class="btn btn-outline-success"
+                                    style="margin-right:5px" >
+                                  <i class='fas fa-check-circle'></i>
+                                  </botton>
+                                  <button onclick=initeRes(false,ths)  id=`+data[i]._id+` class='btn btn-outline-danger' >
+                                      <i class="far fa-times-circle"></i>
+                                  </botton>
+                                  </span></div><br>`);
+                              }
+                            else
+                             $("#noti_body").append("<div>No requests</div>");
+                              }
                      });
-               }
-        });
-  </script>
+          }
+          function initeRes(data,e)
+          {
+            $.ajax({
+                        type:"POST",
+                        data:{res:data,channelId:e.id},
+                         url: "/inviteRes",
+                        success: function(data)
+                         {
+                            e.parentElement.parentElement.remove();
+                         }
+                    });
+          }
+   </script>

@@ -125,6 +125,9 @@ app.controller("createChannel", [
         function successCallback(res) {
           if (res.data == "created") {
             alert("Channel created");
+            $scope.name = "";
+            $scope.disc = "";
+            $scope.tag = "";
             $location.path("/create");
           } else {
             alert("error in creating channel");

@@ -10,7 +10,8 @@ const channelSchema = new Schema(
     },
     discription: String,
     owner: { type: Schema.Types.ObjectId, ref: "user" },
-    members: [{ type: Schema.Types.ObjectId, ref: "user" }]
+    members: [{ type: Schema.Types.ObjectId, ref: "user" }],
+    tag: []
   },
   {
     timestamps: true

@@ -1,49 +1,53 @@
-<style>
-        .navbar li:last-child {
-                      float: right; /* last li item */
-                  }
-        </style>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/user">Home</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav" >
-                &nbsp;&nbsp;
-            <li class="nav-item active">
-              <a class="nav-link" href="/find"><i class="fas fa-search-plus"></i></a>
-            </li>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/user">Home</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav" >
             &nbsp;&nbsp;
-            <li class="nav-item active">
-                    <a class="nav-link" href="/dashbord">Dashbord</a>
-                  </li>
-            &nbsp;&nbsp;
-            <li class="nav-item">
-            <a class="nav-link" href="/create">
-              <button
-                class="btn btn-primary"
-              >
-                Create Channel
-              </button>
-              </a>
-            </li>
-          </ul>
-      </nav>
+        <li class="nav-item active">
+          <a class="nav-link" href="/find">
+            <button class="btn"><i class="fas fa-search-plus"></i></button></a>
+        </li>
+        &nbsp;&nbsp;
+        <li class="nav-item active">
+                <a class="nav-link" href="/dashbord">
+                  <button
+            class="btn"
+          >
+          Dashboard
+          </button></a>
+              </li>
+        &nbsp;&nbsp;
+        <li class="nav-item">
+        <a class="nav-link" href="/create">
+          <button
+            class="btn btn-primary"
+          >
+            Create Channel
+          </button>
+          </a>
+        </li>
+        &nbsp;&nbsp;
+        <li class="nav-item">
+        <a class="nav-link" href="/">
+          <button
+            class="btn btn-primary"
+          >
+            Logout
+          </button>
+          </a>
+        </li>
+      </ul>
+  </nav>
       
-
-      //1 db.messages.aggregate([{$group : {_id : "$channel",sum : {$sum : 1}}},{$sort : {sum : -1}}])
-
-//3 db.users.aggregate([{$group : {_id : "$region",sum : {$sum : 1}}},{$sort : {sum : -1}}])
-
-//4  db.messages.aggregate([{$group : {_id : "$userName",sum : {$sum : 1}}},{$sort : {sum : -1}}])
-
 

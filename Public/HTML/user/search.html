@@ -1,43 +1,55 @@
-<style>
-        .navbar li:last-child {
-                      float: right; /* last li item */
-                  }
-        </style>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/user">Home</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav" >
-                &nbsp;&nbsp;
-            <li class="nav-item active">
-              <a class="nav-link" href="/find"><i class="fas fa-search-plus"></i></a>
-            </li>
-            &nbsp;&nbsp;
-            <li class="nav-item active">
-                    <a class="nav-link" href="/dashbord">Dashbord</a>
-                  </li>
-            &nbsp;&nbsp;
-            <li class="nav-item">
-            <a class="nav-link" href="/create">
-              <button
-                class="btn btn-primary"
-              >
-                Create Channel
-              </button>
-              </a>
-            </li>
-          </ul>
-      </nav>
+
+       <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <a class="navbar-brand" href="/user">Home</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav" >
+                  &nbsp;&nbsp;
+              <li class="nav-item active">
+                <a class="nav-link" href="/find">
+                  <button class="btn"><i class="fas fa-search-plus"></i></button></a>
+              </li>
+              &nbsp;&nbsp;
+              <li class="nav-item active">
+                      <a class="nav-link" href="/dashbord">
+                        <button
+                  class="btn"
+                >
+                Dashboard
+                </button></a>
+                    </li>
+              &nbsp;&nbsp;
+              <li class="nav-item">
+              <a class="nav-link" href="/create">
+                <button
+                  class="btn btn-primary"
+                >
+                  Create Channel
+                </button>
+                </a>
+              </li>
+              &nbsp;&nbsp;
+              <li class="nav-item">
+              <a class="nav-link" href="/">
+                <button
+                  class="btn btn-primary"
+                >
+                  Logout
+                </button>
+                </a>
+              </li>
+            </ul>
+        </nav>
       
 
 
@@ -49,7 +61,7 @@ padding:20px;">
 
 <nav class="navbar navbar-light" style="background-color: #e3f2fd; margin-bottom: 10px; border : 1px solid #adb5bd;" oninput="getChannel()">
     <h4 style="color:darkorchid">Find Channels</h4>
-    <input style="float:left" placeholder="search input" id="search">
+    <input style="float:left; padding-left:6px;" placeholder="search input" id="search">
   </nav>
     <div class="container" id="box">
     
@@ -72,11 +84,24 @@ padding:20px;">
                          {
                             if(data!= "empty")
                                for(i=0;i<data.length;i++)
-                                   $("#box").append("<tr><td class='col-9' style='cursor:pointer' onclick='cilcked()'><h4>"+data[i].name+"</h4></td><td class='col-2' style='padding:0.5rem'><button class='btn btn-outline-success' style='border-radius:25px'>+</button></td></tr>");
+                                   $("#box").append("<tr><td class='col-9' style='cursor:pointer' onclick='cilcked()'><h4>"+data[i].name+"</h4></td><td class='col-2' style='padding:0.5rem'><button id='"+data[i]._id+"'class='btn btn-outline-success' data-toggle='tooltip' data-placement='top' title='click to join' onclick='join(this)'>join</button></td></tr>");
                         else
                         {
                                 $("#box").append("<div class='col-sm-12' style='margin-top:5px;font-weight:bold'><center>No Channels found</center></div>");
                         }
+                         }
+                     });
+        }
+        function join(e)
+        {
+            $.ajax({
+                        type:"POST",
+                        data :{cid:e.id},
+                        url: "/join",
+                        success: function(data)
+                         {
+                           e.parentElement.parentElement.remove();
+                           alert("community joined");
                          }
                      });
         }
