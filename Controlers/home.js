@@ -230,3 +230,78 @@ module.exports.inviteRes = (req, res) => {
   }
   res.send("ok");
 };
+
+module.exports.topchannel = (req, res) => {
+  var match = [
+    { $group: { _id: "$channel", sum: { $sum: 1 } } },
+    { $sort: { sum: -1 } },
+    { $limit: 5 }
+  ];
+  //console.log(req.body);
+  if (req.body.from != "") {
+    //var from = new Date(req.body.from).toISOString().substr(0, 10);
+    //var to = new Date(req.body.to).toISOString().substr(0, 10);
+    match.splice(0, 0, {
+      $match: {
+        $and: [
+          { createdAt: { $gte: new Date(req.body.from) } },
+          { createdAt: { $lte: new Date(req.body.to) } }
+        ]
+      }
+    });
+  }
+  message.aggregate(match, (err, data) => {
+    var id = [];
+    for (var i = 0; i < data.length; i++) {
+      id.push(data[i]._id);
+    }
+    services.findMany(channel, { _id: { $in: id } }, (err, data) => {
+      res.send(data);
+    });
+  });
+};
+module.exports.topuser = (req, res) => {
+  var match = [
+    { $group: { _id: "$name", sum: { $sum: 1 } } },
+    { $sort: { sum: -1 } },
+    { $limit: 5 }
+  ];
+  if (req.body.from != "") {
+    //var from = new Date(req.body.from).toISOString().substr(0, 10);
+    //var to = new Date(req.body.to).toISOString().substr(0, 10);
+    match.splice(0, 0, {
+      $match: {
+        $and: [
+          { createdAt: { $gte: new Date(req.body.from) } },
+          { createdAt: { $lte: new Date(req.body.to) } }
+        ]
+      }
+    });
+  }
+  message.aggregate(match, (err, data) => {
+    res.send(data);
+  });
+};
+module.exports.topregion = (req, res) => {
+  var match = [
+    { $group: { _id: "$region", sum: { $sum: 1 } } },
+    { $sort: { sum: -1 } },
+    { $limit: 5 }
+  ];
+  if (req.body.from != "") {
+    //var from = new Date(req.body.from).toISOString().substr(0, 10);
+    //var to = new Date(req.body.to).toISOString().substr(0, 10);
+    match.splice(0, 0, {
+      $match: {
+        $and: [
+          { createdAt: { $gte: new Date(req.body.from) } },
+          { createdAt: { $lte: new Date(req.body.to) } }
+        ]
+      }
+    });
+  }
+  user.aggregate(match, (err, data) => {
+    res.send(data);
+  });
+};
+module.exports.toptag = (req, res) => {};

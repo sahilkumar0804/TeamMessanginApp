@@ -3,18 +3,28 @@ const app = express.Router();
 
 const home = require("../Controlers/home");
 
-app.post("/login", home.login);
-app.post("/signup", home.signup);
-app.post("/createChannel", home.createChannel);
-app.post("/myChannels", home.myChannels);
-app.post("/search", home.search);
-app.post("/getChat", home.getChat);
-app.post("/addChat", home.addChat);
-app.post("/join", home.join);
-app.post("/findUser", home.findUser);
-app.post("/invite", home.invite);
-app.post("/getrequest", home.getRequest);
-app.post("/inviteRes", home.inviteRes);
+const auth = (req, res, next) => {
+  if (req.session.login) res.status = 401;
+
+  next();
+};
+
+app.post("/login", auth, home.login);
+app.post("/signup", auth, home.signup);
+app.post("/createChannel", auth, home.createChannel);
+app.post("/myChannels", auth, home.myChannels);
+app.post("/search", auth, home.search);
+app.post("/getChat", auth, home.getChat);
+app.post("/addChat", auth, home.addChat);
+app.post("/join", auth, home.join);
+app.post("/findUser", auth, home.findUser);
+app.post("/invite", auth, home.invite);
+app.post("/getrequest", auth, home.getRequest);
+app.post("/inviteRes", auth, home.inviteRes);
+app.post("/topchannels", auth, home.topchannel);
+app.post("/topuser", auth, home.topuser);
+app.post("/topregion", auth, home.topregion);
+app.post("/toptag", auth, home.toptag);
 app.get("*", home.start);
 
 module.exports = app;

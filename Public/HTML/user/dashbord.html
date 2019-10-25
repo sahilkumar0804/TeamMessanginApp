@@ -51,3 +51,101 @@
   </nav>
       
 
+  <div class="container" style="margin-top:10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  -o-box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding:20px;">
+  
+  <nav class="navbar navbar-light" style="background-color: #e3f2fd; margin-bottom: 10px; border : 1px solid #adb5bd;" >
+      <h4 style="color:darkorchid">Dashboard</h4>
+      <span style="float: right;">
+      From :<input id="from" type="date" style="padding-left: 4px;"/>
+     To :<input id="to" type="date" style="padding-left: 4px;" />
+    <button onclick="getdata()" tyle="float: right;">ok</button>  
+  </span>  
+    </nav>
+      <div class="container" id="box">
+          <div class="card">
+              <h5 class="card-header">Top 5 Channel</h5>
+              <div class="card-body" >
+                <ul id="Channel"></ul>
+               
+              </div>
+            </div>
+            <br>
+            <!-- <div class="card">
+                <h5 class="card-header">Top 5 tag</h5>
+                <div id="tag"class="card-body">
+                
+                </div>
+              </div>
+              <br> -->
+              <div class="card">
+                  <h5 class="card-header">Top 5 users</h5>
+                  <div class="card-body" >
+                    <ul id="user"></ul>
+                  </div>
+                </div>
+                <br>
+                <div class="card">
+                    <h5 class="card-header">Top 5 regions</h5>
+                    <div class="card-body" >
+                      <ul id="region"></ul>
+                      
+                    </div>
+                  </div>
+      
+  </div>
+
+
+  <script>
+    $(document).ready(()=>
+    {
+          getdata();
+    });
+
+    function getdata()
+    {
+      $.ajax({
+        type:"post",
+        data:{from :$("#from").val(), to:$("#to").val() },
+        url:"/topchannels",
+        success:(data)=>
+        {
+          for(var i=0;i<data.length;i++)
+            $("#Channel").append("<li>"+data[i].name+"</li><br>");
+        }
+      });
+      $.ajax({
+        type:"post",
+        data:{from :$("#from").val(), to:$("#to").val() },
+        url:"/topuser",
+        success:(data)=>
+        {
+          for(var i=0;i<data.length;i++)
+            $("#user").append("<li>"+data[i]._id+"</li><br>");
+        }
+      });
+      $.ajax({
+        type:"post",
+        data:{from :$("#from").val(), to:$("#to").val() },
+        url:"/toptag",
+        success:(data)=>
+        {
+
+        }
+      });
+      $.ajax({
+        type:"post",
+        data:{from :$("#from").val(), to:$("#to").val() },
+        url:"/topregion",
+        success:(data)=>
+        {
+          for(var i=0;i<data.length;i++)
+            $("#region").append("<li>"+data[i]._id+"</li><br>");
+        }
+      });
+
+    }
+  </script>

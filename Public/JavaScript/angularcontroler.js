@@ -1,4 +1,28 @@
-var app = angular.module("authcontroler", ["ngRoute"]);
+var app = angular
+  .module("authcontroler", ["ngRoute"])
+  .factory("authHttpResponseInterceptor", [
+    "$q",
+    "$location",
+    function($q, $location) {
+      return {
+        response: function(response) {
+          console.log(response.status);
+          if (response.status === 401) {
+            console.log("Response 401");
+          }
+          return response || $q.when(response);
+        },
+        responseError: function(rejection) {
+          console.log("reject", rejection.status);
+          if (rejection.status === 401) {
+            console.log("Response Error 401", rejection);
+            $location.path("/").search("returnTo", $location.path());
+          }
+          return $q.reject(rejection);
+        }
+      };
+    }
+  ]);
 
 app.config(function($routeProvider, $locationProvider) {
   $routeProvider
